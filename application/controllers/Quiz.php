@@ -11,39 +11,16 @@ class Quiz extends CI_Controller{
         $this->load->model('Quiz_m');
     }
 
+
     private function _example_output($output = null)
 	{
 		$this->load->view('example.php',(array)$output);
 	}
 
-    private function validacion_login(){
-        $variabledata = $this->session->userdata('userdata');
-        $get_usuario = $this->Quiz_m->get_user($variabledata);
-        if(empty($variabledata)){
-            redirect('Autentificar/login');
-            
-        }
-
-        return $get_usuario;
-    }
-
-    private function verificarE(){
-        $login = $this->validacion_login();
-        if($login->tipo_usuario != "E"){
-            redirect('Autentificar/login');
-        }
-    }
-
-    private function verificarA(){
-        $login = $this->validacion_login();
-        if($login->tipo_usuario != "A"){
-            redirect('Autentificar/login');
-        }
-    }
 
 
     public function index(){
-        $login = $this->verificarE();
+        $login = verificarE();
         $data['count_questions'] = $this->Quiz_m->get_count_questions();
         $data['subview']='index';
         $this->load->view('Quiz_layout',$data);
@@ -51,7 +28,7 @@ class Quiz extends CI_Controller{
     }
 
     public function question($question_id){
-        $this->verificarE();
+        verificarE();
         $data['question'] = $this->Quiz_m->get_question($question_id);
         $data['choices'] = $this->Quiz_m->get_choices($question_id);
         $data['count_questions'] = $this->Quiz_m->get_count_questions();
@@ -59,7 +36,7 @@ class Quiz extends CI_Controller{
         $this->load->view('Quiz_layout',$data);  
     }
     public function process(){
-        $this->verificarE();
+        verificarE();
         if(!$this->session->userdata('score')){
             $this->session->userdata('score',0);
         }
@@ -90,13 +67,13 @@ class Quiz extends CI_Controller{
     }
 
     public function final(){ 
-        $this->verificarE();
+        verificarE();
         redirect('Mail/email');
         $this->session->sess_destroy();
     }
 
     public function add(){
-        $this->verificarA();
+        verificarA();
         $choices = $this->Quiz_m->get_count_choicess();
         $rules = $this->Quiz_m->rules;
         $this->form_validation->set_rules($rules);
@@ -134,21 +111,6 @@ class Quiz extends CI_Controller{
         $this->load->view('Quiz_layout',$data); 
     }
 
-    
-
-    public function usuarios(){
-        $this->verificarA();
-        $crud = new grocery_CRUD();
-        $crud->set_table('usuario');
-        //$crud->set_Subject('usuario', 'usuarios');
-        $crud->columns(['id_usuario','nombre','correo','clave','tipo_usuario']);
-        $output = $crud->render();
-
-        $this->_example_output($output);
-
-    }
-
-
-
+ 
 
 }

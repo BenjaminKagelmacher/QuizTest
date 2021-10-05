@@ -61,7 +61,7 @@
     </div>
     <br />
     <button type = "submit" class = "btn btn-primary">Agregar pregunta</button>
-    <a href="<?php echo site_url('Quiz/usuarios');?>" class = "btn btn-outline-primary">Agregar Usuarios</a>
+    <a href="<?php echo site_url('Usuarios/usuarios');?>" class = "btn btn-outline-primary">Agregar Usuarios</a>
     <a href="<?php echo site_url('autentificar/logout');?>" class = "btn btn-outline-primary">Cerrar sesion</a>
-    <a href="<?php echo site_url('Mail/email');?>" class = "btn btn-outline-primary">Enviar mail</a>
+    <a href="<?php echo site_url('Mail/sendwithid');?>" class = "btn btn-outline-primary">Enviar mail</a>
 </form>

@@ -57,11 +57,20 @@ class Quiz_m extends CI_Model{
         ),
     );
 
-    // Buscar proteccion email 
+    
     public $rulesRec = array(
         'Mail' => array(
             'field' => 'Usuario',
             'label' => 'correo',
+            'rules' => 'trim|required' 
+            
+        ),
+    );
+
+    public $rulesid = array(
+        'Mail' => array(
+            'field' => 'Usuario',
+            'label' => 'number',
             'rules' => 'trim|required' 
             
         ),
@@ -126,6 +135,11 @@ class Quiz_m extends CI_Model{
     public function insertusuario($data){
         $this->db->insert('usuario',$data);
         return true;
+    }
+
+    public function get_userid($user){
+        $this->db->where('id_usuario',$user);
+        return $this->db->get('usuario')->row();
     }
 
     

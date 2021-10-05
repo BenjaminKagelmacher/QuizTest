@@ -8,9 +8,7 @@ class Mail extends CI_Controller{
         $this->load->model('Quiz_m'); 
         $this->load->helper('form');
 
-        $CI = & get_instance();
-        $CI->load->library('email');
-        $CI->email->initialize($this->config());
+        
 
     }
 
@@ -30,28 +28,19 @@ class Mail extends CI_Controller{
 
         return $get_usuario;
     }
-
-    //Comentado uno de los intentos enviar email
-    private function config(){
-        $config = array(
-            'protocol' =>  'smtp',
-            'smtp_host' => 'ssl://smtp.googlemail.com',
-            'smtp_port' =>  465,
-            'smtp_user' => 'quiztestcuenta@gmail.com',
-            'smtp_pass' => 'quiztest',
-            'mailtype' =>  'html',
-            'charset' =>   'iso-8859-1',
-            'wordwrap' => true
-
-        );
-
-        return $config;
+    private function verificarA(){
+        $login = $this->validacion_login();
+        if($login->tipo_usuario != "A"){
+            redirect('Autentificar/login');
+        }
     }
+
+
     
     public function email(){
         
         
-        $this->load->library('email', $this->config());
+        $this->load->library('email', $this->config->load('emaildata'));
         $this->email->set_newline("\r\n");
         $this->email->from('Email@gmail.com', 'Benja');
         $this->email->to('quiztestcuenta@gmail.com');
@@ -78,17 +67,17 @@ class Mail extends CI_Controller{
             $mail = $this->input->post(null);
             $Revisar = $this->Quiz_m->get_user($mail['Usuario']);
             if(!is_null($Revisar)){
-                $this->load->library('email', $this->config());
-                $this->email->set_newline("\r\n");
-                $this->email->from('quiztestcuenta@gmail.com', 'Benja');
-                $this->email->to($Revisar->correo);
-                $this->email->subject('Recupera tu clave'); 
-                $this->email->message( $this->load->view('recuperar',['clave' => $Revisar->clave],true));
-                if (!$this->email->send()) {
-                    $data['message'] = 'Ups! Algo fallo';
+
+                $coreo = $Revisar->correo;
+                $asunto = 'Recupera tu clave';
+                $mensaje = $this->load->view('recuperar',['clave' => $Revisar->clave],true);
+                
+               
+               if (correo($coreo,$asunto,$mensaje)) {
+                    $data['message'] = 'Se envio';
                 }
                 else {
-                    $data['message'] = 'Se envio';
+                    $data['message'] = 'Ups! Algo fallo';
                 }
             }
             else{
@@ -101,7 +90,6 @@ class Mail extends CI_Controller{
 
         
     }
-
 
 
 }
